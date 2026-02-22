@@ -14,9 +14,6 @@ The API supports the following operations:
 - **List all customers**  
   `GET /api/customers`
 
-- **Get customer by ID**  
-  `GET /api/customers/{id}`
-
 - **Remove a customer by ID**  
   `DELETE /api/customers/{id}`
 
