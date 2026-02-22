@@ -1,15 +1,16 @@
-﻿using System.Collections.Concurrent;
+﻿using AtosCustomer.Api.Entity;
+using System.Collections.Concurrent;
 using static AtosCustomer.Api.DTOs.CustomerModels;
 
 namespace AtosCustomer.Api.Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
-        private readonly ConcurrentDictionary<int, CustomerResponse> _store = new();
+        private readonly ConcurrentDictionary<int, Customer> _store = new();
         private readonly object _lock = new();
         private int _lastId = 0;
 
-        public CustomerResponse? Add(string firstname, string surname)
+        public Customer? Add(string firstname, string surname)
         {
             lock (_lock)
             {
@@ -21,7 +22,12 @@ namespace AtosCustomer.Api.Repository
                     return null;
 
                 var id = ++_lastId;
-                var customer = new CustomerResponse(id, firstname, surname);
+                var customer = new Customer 
+                { 
+                    Id = id, 
+                    Firstname = firstname, 
+                    Surname = surname 
+                };
                 _store[id] = customer;
 
                 return customer;
@@ -41,7 +47,7 @@ namespace AtosCustomer.Api.Repository
             }
         }
 
-        public IReadOnlyCollection<CustomerResponse> GetAll()
+        public IReadOnlyCollection<Customer> GetAll()
         {
             return _store.Values.ToArray();
         }

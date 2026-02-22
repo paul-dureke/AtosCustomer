@@ -32,7 +32,7 @@ namespace AtosCustomer.Api.Controllers
 
             _logger.LogInformation("Customer created: {CustomerId}", created.Id);
 
-            return StatusCode(StatusCodes.Status201Created, created);
+            return StatusCode(StatusCodes.Status201Created, created.ToResponse());
         }
 
         [HttpDelete("{id:int}")]
@@ -57,7 +57,7 @@ namespace AtosCustomer.Api.Controllers
             var customers = _repo.GetAll();
 
             _logger.LogInformation("Retrieved all {CustomerCount} customers", customers.Count);
-            return Ok(customers);
+            return Ok(customers.Select(c => c.ToResponse()).ToArray());
         }
     }
 }

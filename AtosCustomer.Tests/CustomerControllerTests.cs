@@ -1,5 +1,7 @@
 ﻿using AtosCustomer.Api.Controllers;
+using AtosCustomer.Api.Entity;
 using AtosCustomer.Api.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -34,7 +36,7 @@ namespace AtosCustomer.Tests
         public void Add_Should_Return_Conflict_When_Duplicate()
         {
             _repoMock.Setup(r => r.Add("John", "Doe"))
-                     .Returns((CustomerResponse?)null);
+                     .Returns((Customer?)null);
 
             var controller = CreateController();
 
@@ -47,7 +49,7 @@ namespace AtosCustomer.Tests
         public void Add_Should_Return_201Created_When_Success()
         {
             _repoMock.Setup(r => r.Add("John", "Doe"))
-                     .Returns(new CustomerResponse(1, "John", "Doe"));
+                     .Returns(new Customer { Id = 1, Firstname = "John", Surname = "Doe" });
 
             var controller = CreateController();
 
@@ -55,12 +57,12 @@ namespace AtosCustomer.Tests
 
             var objectResult = Assert.IsType<ObjectResult>(result);
 
-            Assert.Equal(201, objectResult.StatusCode);
+            Assert.Equal(StatusCodes.Status201Created, objectResult.StatusCode);
 
-            var customer = Assert.IsType<CustomerResponse>(objectResult.Value);
-            Assert.Equal(1, customer.Id);
-            Assert.Equal("John", customer.Firstname);
-            Assert.Equal("Doe", customer.Surname);
+            var dto = Assert.IsType<CustomerResponse>(objectResult.Value);
+            Assert.Equal(1, dto.Id);
+            Assert.Equal("John", dto.Firstname);
+            Assert.Equal("Doe", dto.Surname);
         }
 
         [Fact]
@@ -91,9 +93,9 @@ namespace AtosCustomer.Tests
         public void GetAll_Should_Return_Ok_With_Customers()
         {
             _repoMock.Setup(r => r.GetAll())
-                     .Returns(new List<CustomerResponse>
+                     .Returns(new List<Customer>
                      {
-                     new(1, "A", "One")
+                      new Customer { Id = 1, Firstname = "John", Surname = "Doe" }
                      });
 
             var controller = CreateController();
@@ -101,9 +103,15 @@ namespace AtosCustomer.Tests
             var result = controller.GetAll();
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var customers = Assert.IsAssignableFrom<IEnumerable<CustomerResponse>>(okResult.Value);
+            Assert.Equal(200, okResult.StatusCode);
 
-            Assert.Single(customers);
+            var customers = Assert.IsAssignableFrom<IEnumerable<CustomerResponse>>(okResult.Value);
+            var list = customers.ToList();
+
+            Assert.Single(list);
+            Assert.Equal(1, list[0].Id);
+            Assert.Equal("John", list[0].Firstname);
+            Assert.Equal("Doe", list[0].Surname);
         }
     }
 }

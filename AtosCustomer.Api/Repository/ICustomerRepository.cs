@@ -1,11 +1,11 @@
-﻿using static AtosCustomer.Api.DTOs.CustomerModels;
+﻿using AtosCustomer.Api.Entity;
 
 namespace AtosCustomer.Api.Repository
 {
     public interface ICustomerRepository
     {
-        CustomerResponse? Add(string firstname, string surname);
+        Customer? Add(string firstname, string surname);
         bool Remove(int id);
-        IReadOnlyCollection<CustomerResponse> GetAll();
+        IReadOnlyCollection<Customer> GetAll();
     }
 }
