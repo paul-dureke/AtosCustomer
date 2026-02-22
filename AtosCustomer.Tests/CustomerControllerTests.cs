@@ -58,5 +58,28 @@ namespace AtosCustomer.Tests
             Assert.Equal("Doe", customer.Surname);
         }
 
+        [Fact]
+        public void Remove_Should_Return_NotFound_When_Not_Exists()
+        {
+            _repoMock.Setup(r => r.Remove(1)).Returns(false);
+
+            var controller = CreateController();
+
+            var result = controller.Remove(1);
+
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void Remove_Should_Return_NoContent_When_Deleted()
+        {
+            _repoMock.Setup(r => r.Remove(1)).Returns(true);
+
+            var controller = CreateController();
+
+            var result = controller.Remove(1);
+
+            Assert.IsType<NoContentResult>(result);
+        }
     }
 }

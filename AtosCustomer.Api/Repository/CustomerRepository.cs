@@ -27,5 +27,18 @@ namespace AtosCustomer.Api.Repository
                 return customer;
             }
         }
+
+        public bool Remove(int id)
+        {
+            if (id <= 0) return false;
+
+            lock (_lock)
+            {
+                if (!_store.TryRemove(id, out var removed))
+                    return false;
+
+                return true;
+            }
+        }
     }
 }

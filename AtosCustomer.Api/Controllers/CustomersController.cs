@@ -34,5 +34,21 @@ namespace AtosCustomer.Api.Controllers
 
             return StatusCode(StatusCodes.Status201Created, created);
         }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult Remove(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+
+            var removed = _repo.Remove(id);
+
+            if (!removed)
+                return NotFound();
+
+            _logger.LogInformation("Removed Customer with Id: {CustomerId}", id);
+
+            return NoContent();
+        }
     }
 }

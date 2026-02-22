@@ -26,5 +26,23 @@ namespace AtosCustomer.Tests
 
             Assert.Null(duplicate);
         }
+
+        [Fact]
+        public void Remove_Should_Return_True_When_Existing()
+        {
+            var customer = _repo.Add("Jane", "Doe");
+
+            var removed = _repo.Remove(customer!.Id);
+
+            Assert.True(removed);
+        }
+
+        [Fact]
+        public void Remove_Should_Return_False_When_Not_Existing()
+        {
+            var removed = _repo.Remove(999);
+
+            Assert.False(removed);
+        }
     }
 }
