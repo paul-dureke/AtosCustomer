@@ -40,5 +40,10 @@ namespace AtosCustomer.Api.Repository
                 return true;
             }
         }
+
+        public IReadOnlyCollection<CustomerResponse> GetAll()
+        {
+            return _store.Values.ToArray();
+        }
     }
 }

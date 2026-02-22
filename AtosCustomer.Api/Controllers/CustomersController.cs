@@ -50,5 +50,14 @@ namespace AtosCustomer.Api.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var customers = _repo.GetAll();
+
+            _logger.LogInformation("Retrieved all {CustomerCount} customers", customers.Count);
+            return Ok(customers);
+        }
     }
 }

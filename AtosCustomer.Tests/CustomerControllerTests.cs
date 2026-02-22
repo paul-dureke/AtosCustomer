@@ -15,12 +15,17 @@ namespace AtosCustomer.Tests
         private CustomersController CreateController()
             => new CustomersController(_repoMock.Object, _loggerMock.Object);
 
-        [Fact]
-        public void Add_Should_Return_BadRequest_When_Invalid()
+        [Theory]
+        [InlineData(null, "Doe")]
+        [InlineData("John", null)]
+        [InlineData("John", "  ")]
+        [InlineData("", "Doe")]
+        [InlineData("John", "")]
+        public void Add_Should_Return_BadRequest_When_Invalid(string? firstname, string? surname)
         {
             var controller = CreateController();
 
-            var result = controller.Add(new CreateCustomerRequest(null, "Doe"));
+            var result = controller.Add(new CreateCustomerRequest(firstname, surname));
 
             Assert.IsType<BadRequestResult>(result);
         }
@@ -80,6 +85,25 @@ namespace AtosCustomer.Tests
             var result = controller.Remove(1);
 
             Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public void GetAll_Should_Return_Ok_With_Customers()
+        {
+            _repoMock.Setup(r => r.GetAll())
+                     .Returns(new List<CustomerResponse>
+                     {
+                     new(1, "A", "One")
+                     });
+
+            var controller = CreateController();
+
+            var result = controller.GetAll();
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var customers = Assert.IsAssignableFrom<IEnumerable<CustomerResponse>>(okResult.Value);
+
+            Assert.Single(customers);
         }
     }
 }

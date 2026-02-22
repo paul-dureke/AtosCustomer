@@ -44,5 +44,16 @@ namespace AtosCustomer.Tests
 
             Assert.False(removed);
         }
+
+        [Fact]
+        public void GetAll_Should_Return_All_Customers()
+        {
+            _repo.Add("A", "One");
+            _repo.Add("B", "Two");
+
+            var customers = _repo.GetAll();
+
+            Assert.Equal(2, customers.Count);
+        }
     }
 }

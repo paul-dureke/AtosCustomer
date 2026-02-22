@@ -6,5 +6,6 @@ namespace AtosCustomer.Api.Repository
     {
         CustomerResponse? Add(string firstname, string surname);
         bool Remove(int id);
+        IReadOnlyCollection<CustomerResponse> GetAll();
     }
 }
