@@ -1,0 +1,31 @@
+﻿using System.Collections.Concurrent;
+using static AtosCustomer.Api.DTOs.CustomerModels;
+
+namespace AtosCustomer.Api.Repository
+{
+    public class CustomerRepository : ICustomerRepository
+    {
+        private readonly ConcurrentDictionary<int, CustomerResponse> _store = new();
+        private readonly object _lock = new();
+        private int _lastId = 0;
+
+        public CustomerResponse? Add(string firstname, string surname)
+        {
+            lock (_lock)
+            {
+                var exists = _store.Values.Any(c =>
+                string.Equals(c.Firstname, firstname, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(c.Surname, surname, StringComparison.OrdinalIgnoreCase));
+
+                if (exists)
+                    return null;
+
+                var id = ++_lastId;
+                var customer = new CustomerResponse(id, firstname, surname);
+                _store[id] = customer;
+
+                return customer;
+            }
+        }
+    }
+}
